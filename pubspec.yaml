@@ -39,6 +39,8 @@ dependencies:
   http: ^1.2.1
   dio: ^5.4.1
   flutter_bloc: ^8.1.4
+  image_picker: ^1.0.7
+  sqflite: ^2.3.2
 
 
 

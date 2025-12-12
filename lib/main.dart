@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => MyInfoModel(),
+      // 앱 전역에 상태 데이터를 공개하면서 초기 데이터 로딩해서 유지하게
+      create: (context) => MyInfoModel()..loadUserInfo(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false, // 디버그 띠 보이지않게
         initialRoute: '/main',
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         //화면 전환 요청을 받았을때 처리할 로직이 있다면 무언가 판단해서 다르게 화면전환을 하고싶거나
         //화면 전환시에 어떤 데이터가 미리 준비되어야하거나
         //매개변수는 지금 발생한 화면전환 요청 정보 이름 및 arguments
-        onGenerateRoute: (settings) {
+        onGenerateRoute: (settings){
           if (settings.name == '/detail') {
             // 로직 돌리고..
             // 리턴 시키는 Route 정보대로 화면 전환

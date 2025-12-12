@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lab1/provider/MyInfoModel.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class MyInfoScreen extends StatefulWidget {
@@ -22,6 +25,36 @@ class MyInfoScreenState extends State<MyInfoScreen> {
   // 이 위젯이 출력될때 기존에 입력된 데이터가 유지되게 하려면 TextEditingController 사용해야
   late TextEditingController emailController;
   late TextEditingController phoneController;
+
+  // gallery button callback
+  Future<void> openGallery() async {
+    //image_picker package 이용
+    ImagePicker picker = ImagePicker();
+
+    // gallery 목록화면 뜨고 유저가 선택한 이미지의 파일정보가 리턴
+    XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      // provider 등록.. 앱 전역에서 이용하게
+      Provider.of<MyInfoModel>(
+        context,
+        listen: false,
+      ).saveMyInfo(userImage: image.path);
+    }
+  }
+
+  Future<void> openCamera() async {
+    ImagePicker picker = ImagePicker();
+    XFile? image = await picker.pickImage(source: ImageSource.camera);
+
+    if (image != null) {
+      // provider 등록.. 앱 전역에서 이용하게
+      Provider.of<MyInfoModel>(
+        context,
+        listen: false,
+      ).saveMyInfo(userImage: image.path);
+    }
+  }
 
   @override
   void initState() {
@@ -48,14 +81,10 @@ class MyInfoScreenState extends State<MyInfoScreen> {
 
   //입력 요소 저장을 위해 호출
   Future<void> saveData() async {
-    // print('email : ${email}' );
-    // print('phone : ${phone}' );
-    // print('photo : ${userImage}' );
-
-    Provider.of<MyInfoModel>(
-      context,
-      listen: false,
-    ).saveMyInfo(email: emailController.text, phone: phoneController.text);
+    //앱 전역에 데이터 유지되게
+    final model = Provider.of<MyInfoModel>(context, listen: false);
+    model.saveMyInfo(email: emailController.text, phone: phoneController.text);
+    model.insertDB();
     Navigator.pop(context);
   }
 
@@ -100,13 +129,24 @@ class MyInfoScreenState extends State<MyInfoScreen> {
                     child: Container(
                       width: 150,
                       height: 150,
-                      child: Image.asset(model.userImage, fit: BoxFit.cover),
+                      child: model.userImage.startsWith('assets/')
+                          ? Image.asset(model.userImage, fit: BoxFit.cover)
+                          : Image.file(
+                              File(model.userImage),
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                   SizedBox(height: 24),
-                  ElevatedButton(onPressed: () {}, child: Text('Gallery App')),
+                  ElevatedButton(
+                    onPressed: openGallery,
+                    child: Text('Gallery App'),
+                  ),
                   SizedBox(height: 24),
-                  ElevatedButton(onPressed: () {}, child: Text('Camera App')),
+                  ElevatedButton(
+                    onPressed: openCamera,
+                    child: Text('Camera App'),
+                  ),
                   SizedBox(height: 30),
                   Form(
                     key: formKey,
@@ -124,10 +164,6 @@ class MyInfoScreenState extends State<MyInfoScreen> {
                             }
                             return null; // 오류문자 반환할게 없다 = valid
                           },
-                          //Form state의 save() 호출하는 순간 자동호출
-                          // onSaved: (value) {
-                          //   email = value;
-                          // },
                         ),
                         TextFormField(
                           controller: phoneController,
@@ -140,10 +176,6 @@ class MyInfoScreenState extends State<MyInfoScreen> {
                             }
                             return null; // 오류문자 반환할게 없다 = valid
                           },
-                          //Form state의 save() 호출하는 순간 자동호출
-                          // onSaved: (value) {
-                          //   phone = value;
-                          // },
                         ),
                       ],
                     ),

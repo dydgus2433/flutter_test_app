@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lab1/provider/MyInfoModel.dart';
 import 'package:flutter_lab1/screen/myinfo/MyInfoScreen.dart';
+import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -12,23 +14,32 @@ class MainDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, size : 40, color: Colors.blue,),
-                ),
-                SizedBox(height: 10,),
-                Text(
-                  'kim@example.com',
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ],
+            child: Consumer<MyInfoModel>(
+                builder: (context,model,child){
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 30,
+                      ),
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.white,
+                        // child: Icon(Icons.person, size : 40, color: Colors.blue,),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          child: Image.asset(model.userImage, fit:BoxFit.cover),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Text(
+                        model.email,
+                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  );
+                }
             ),
           ),
           ListTile(
@@ -54,8 +65,15 @@ class MainDrawer extends StatelessWidget {
             title: Text('Provider'),
             onTap: (){
 
-              //  Navigator.push(context, MaterialPageRoute(builder: (context)=> MyInfoScreen()));
               Navigator.pushNamed(context, '/provider');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.home,),
+            title: Text('Bloc'),
+            onTap: (){
+
+              Navigator.pushNamed(context, '/bloc');
             },
           ),
         ],

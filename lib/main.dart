@@ -6,6 +6,7 @@ import 'package:flutter_lab1/screen/dio/DioTestScreen.dart';
 import 'package:flutter_lab1/screen/event/EventScreen.dart';
 import 'package:flutter_lab1/screen/main/MainScreen.dart';
 import 'package:flutter_lab1/screen/myinfo/MyInfoScreen.dart';
+import 'package:flutter_lab1/screen/platform/PlatformScreen.dart';
 import 'package:flutter_lab1/screen/provider/ProviderMainScreen.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
           '/dio': (context) => DioTestScreen(),
           '/provider': (context) => ProviderMainScreen(),
           '/bloc': (context) => BlocMainScreen(),
+          '/platform': (context) => PlatformScreen(),
         },
         //화면 전환 요청을 받았을때 처리할 로직이 있다면 무언가 판단해서 다르게 화면전환을 하고싶거나
         //화면 전환시에 어떤 데이터가 미리 준비되어야하거나
